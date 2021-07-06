@@ -1,4 +1,4 @@
-#include<iostream>
+ï»¿#include<iostream>
 #include<regex>
 #include<string>
 #include<vector>
@@ -229,8 +229,6 @@ public:
     }
     float GetProsjekOcjena() {
         float prosjek = 0;
-        if (_polozeniPredmeti.getTrenutno() == 0)
-            return prosjek;
         for (size_t i = 0; i < _polozeniPredmeti.getTrenutno(); i++)
         {
             prosjek += _polozeniPredmeti.getElement1(i)->ProsjecnaOcjena();
@@ -298,8 +296,6 @@ public:
     }
     float GetDosadasnjiUspjeh(eRazred razred) {
         float prosjek = 0;
-        if (_uspjeh.size() == 0)
-            return prosjek;
         for (size_t i = 0; i < _uspjeh.size(); i++)
         {
             if (_uspjeh[i].GetERazred() == razred) {
@@ -341,6 +337,7 @@ public:
         }
         Uspjeh u(razred);
         u.GetPredmeti().AddElement(&predmet, napomena);
+        _uspjeh.push_back(u);
         float dosad = GetDosadasnjiUspjeh(razred);
         float ukupni = u.GetProsjekOcjena();
         thread t1(&Kandidat::SaljemMejl, this, razred, dosad, ukupni);
@@ -436,7 +433,6 @@ void main() {
     - prvi dio broja (2 ili 3 cifre)
     - razmak ili crtica, oboje opcionalno tj. broj telefona ne mora sadrzavati niti jedno niti drugo
      - drugi dio broja (2 ili 3 cifre)
-
     ukoliko broj telefona nije u validnom formatu, njegova vrijednost se postavlja na NOT VALID
     */
 
@@ -479,20 +475,20 @@ void main() {
     if (jasmin.AddPredmet(PRVI, Matematika, "Napomena 5"))
         cout << "Predmet uspjesno dodan!" << crt;
 
-      /*nakon evidentiranja uspjeha na bilo kojem predmetu kandidatu se salje email sa porukom:
-      FROM:info@fit.ba
-      TO: emailKorisnika
-      Postovani ime i prezime, evidentirali ste uspjeh za X razred. Dosadasnji uspjeh (prosjek)
-      na nivou X razreda iznosi Y, a ukupni uspjeh u toku skolovanja iznosi Z.
-      Pozdrav.
-      FIT Team.
-    
-      ukoliko je prosjek na nivou tog razreda veci od 4.5 kandidatu se salje SMS sa porukom: "Svaka cast za uspjeh 4.X u X razredu". Slanje SMS-a izvrsiti samo u slucaju da je broj telefona validna, u protivnom ispisati poruku „BROJ TELEFONA NIJE VALIDAN“
-    
-    
-      slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
-      */
-     cout << jasmin << crt;
+    /*nakon evidentiranja uspjeha na bilo kojem predmetu kandidatu se salje email sa porukom:
+    FROM:info@fit.ba
+    TO: emailKorisnika
+    Postovani ime i prezime, evidentirali ste uspjeh za X razred. Dosadasnji uspjeh (prosjek)
+    na nivou X razreda iznosi Y, a ukupni uspjeh u toku skolovanja iznosi Z.
+    Pozdrav.
+    FIT Team.
+
+    ukoliko je prosjek na nivou tog razreda veci od 4.5 kandidatu se salje SMS sa porukom: "Svaka cast za uspjeh 4.X u X razredu". Slanje SMS-a izvrsiti samo u slucaju da je broj telefona validna, u protivnom ispisati poruku Â„BROJ TELEFONA NIJE VALIDANÂ“
+
+
+    slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
+    */
+    cout << jasmin << crt;
     //
     //  //vraca kolekciju predmeta koji sadrze najmanje jednu ocjenu evidentiranu u periodu izmedju proslijedjenih datuma
     //  //float se odnosi na prosjecan broj dana izmedju ostvarenih ocjena na predmetu
