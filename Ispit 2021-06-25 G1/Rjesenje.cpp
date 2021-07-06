@@ -182,8 +182,6 @@ public:
     }
     float ProsjecnaOcjena() {
         float prosjek = 0;
-        if (_ocjene->getTrenutno() == 0)
-            return prosjek;
         for (size_t i = 0; i < _ocjene->getTrenutno(); i++)
         {
             prosjek += _ocjene->getElement2(i);
@@ -303,9 +301,9 @@ public:
                 {
                     prosjek += _uspjeh[i].GetPredmeti().getElement1(j)->ProsjecnaOcjena();
                 }
+                return prosjek / _uspjeh[i].GetPredmeti().getTrenutno();
             }
         }
-        return prosjek / _uspjeh.size();
     }
     bool AddPredmet(eRazred razred, Predmet& predmet, const char* napomena = "napomena") {
         for (size_t i = 0; i < _uspjeh.size(); i++)
@@ -482,10 +480,7 @@ void main() {
     na nivou X razreda iznosi Y, a ukupni uspjeh u toku skolovanja iznosi Z.
     Pozdrav.
     FIT Team.
-
     ukoliko je prosjek na nivou tog razreda veci od 4.5 kandidatu se salje SMS sa porukom: "Svaka cast za uspjeh 4.X u X razredu". Slanje SMS-a izvrsiti samo u slucaju da je broj telefona validna, u protivnom ispisati poruku BROJ TELEFONA NIJE VALIDAN
-
-
     slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
     */
     cout << jasmin << crt;
