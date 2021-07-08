@@ -1,4 +1,3 @@
-﻿#include<iostream>
 #include<regex>
 #include<string>
 #include<vector>
@@ -6,6 +5,7 @@
 #include<mutex>
 #include<exception>
 #include<thread>
+#include<iostream>
 using namespace std;
 
 const char* PORUKA = "\n-------------------------------------------------------------------------------\n"
@@ -178,7 +178,7 @@ public:
         return *this;
     }
     void AddOcjena(Datum& datum, int ocjena) {
-        _ocjene->AddElement(&datum, ocjena);
+        _ocjene->AddElement(new Datum(datum), ocjena);
     }
     float ProsjecnaOcjena() {
         float prosjek = 0;
