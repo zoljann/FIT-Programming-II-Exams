@@ -38,7 +38,9 @@ char* GetNizKaraktera(const char* sadrzaj, bool dealociraj = false) {
         delete[]sadrzaj;
     return temp;
 }
-
+bool ValidirajLozinku(string lozinka) {
+    return regex_search(lozinka, regex("(?=.{7,})(?=.*[A-Z]{1,})(?=.*[a-z]{1,})(?=.*\\d{1,})(?=.*\\W{1,})"));
+}
 template<class T1, class T2, int max = 10>
 class Kolekcija {
     T1* _elementi1[max] = { nullptr };
@@ -261,7 +263,7 @@ public:
     {
         _imePrezime = GetNizKaraktera(imePrezime);
         _emailAdresa = emailAdresa;
-        //_lozinka = ValidirajLozinku(lozinka) ? lozinka : NIJE_VALIDNA;
+        _lozinka = ValidirajLozinku(lozinka) ? lozinka : NIJE_VALIDNA;
     }
     Korisnik(const Korisnik& obj) {
         _imePrezime = GetNizKaraktera(obj._imePrezime);
@@ -492,17 +494,17 @@ void main() {
     /* ispisuje: naziv tehnike, ocjene (zajedno sa datumom) i prosjecnu ocjenu za tu tehniku
        ukoliko tehnika nema niti jednu ocjenu prosjecna treba biti 0*/
     cout << choku_zuki << endl;
-    //
-    //  if (ValidirajLozinku("john4Do*e"))
-    //      cout << "OK" << crt;
-    //  if (!ValidirajLozinku("john4Doe"))
-    //      cout << "Specijalni znak?" << crt;
-    //  if (!ValidirajLozinku("jo*4Da"))
-    //      cout << "7 znakova?" << crt;
-    //  if (!ValidirajLozinku("4jo-hnoe"))
-    //      cout << "Veliko slovo?" << crt;
-    //  if (ValidirajLozinku("@john2Doe"))
-    //      cout << "OK" << crt;
+   
+     if (ValidirajLozinku("john4Do*e"))
+         cout << "OK" << crt;
+     if (!ValidirajLozinku("john4Doe"))
+         cout << "Specijalni znak?" << crt;
+     if (!ValidirajLozinku("jo*4Da"))
+         cout << "7 znakova?" << crt;
+     if (!ValidirajLozinku("4jo-hnoe"))
+         cout << "Veliko slovo?" << crt;
+     if (ValidirajLozinku("@john2Doe"))
+         cout << "OK" << crt;
 
       /*
       za autentifikaciju svaki korisnik mora posjedovati lozinku koja sadrzi:
