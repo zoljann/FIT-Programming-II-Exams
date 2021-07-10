@@ -145,6 +145,18 @@ public:
         }
         return *this;
     }
+    bool operator==(const Datum& drugi)
+    {
+        return *_godina == *drugi._godina && *_mjesec == *drugi._mjesec && *_dan == *drugi._dan;
+    }
+    int toDays()const
+    {
+        return *_godina * 365 + *_mjesec * 30 + *_dan;
+    }
+    bool operator>(const Datum drugi)
+    {
+        return this->toDays() > drugi.toDays();
+    }
     ~Datum() {
         delete _dan; _dan = nullptr;
         delete _mjesec; _mjesec = nullptr;
@@ -342,8 +354,44 @@ public:
         t1.join();
         return true;
     }
+
     ~Kandidat() {
         delete[] _imePrezime; _imePrezime = nullptr;
+    }
+    float GetProsjecanBrojDana()
+    {
+        float prosjek = 0;
+        for (int i = 0; i < _uspjeh.size(); i++)
+        {
+            for (int j = 0; j < _uspjeh[i].GetPredmeti().getTrenutno(); j++)
+            {
+                for (int k = 0; k < _uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getTrenutno() - 1; k++)
+                {
+                    prosjek = _uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k)->toDays() + _uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k + 1)->toDays();
+                }
+                return prosjek / _uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getTrenutno();
+            }
+        }
+    }
+
+    Kolekcija<Predmet, float> operator()(Datum prvi, Datum drugi)
+    {
+        Kolekcija<Predmet, float> nova;
+        float prosjecanBrojDana = GetProsjecanBrojDana();
+        for (int i = 0; i < _uspjeh.size(); i++)
+        {
+            for (int j = 0; j < _uspjeh[i].GetPredmeti().getTrenutno(); j++)
+            {
+                for (int k = 0; k < _uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getTrenutno(); k++)
+                {
+                    if (*_uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k) > prvi && drugi > *_uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k))
+                    {
+                        nova.AddElement(*_uspjeh[i].GetPredmeti().getElement1(j), GetProsjecanBrojDana());
+                    }
+                }
+            }
+        }
+        return nova;
     }
     friend ostream& operator<< (ostream& COUT, Kandidat& obj) {
         COUT << obj._imePrezime << " " << obj._emailAdresa << " " << obj._brojTelefona << endl;
@@ -484,11 +532,11 @@ void main() {
     slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
     */
     cout << jasmin << crt;
-    //
-    //  //vraca kolekciju predmeta koji sadrze najmanje jednu ocjenu evidentiranu u periodu izmedju proslijedjenih datuma
-    //  //float se odnosi na prosjecan broj dana izmedju ostvarenih ocjena na predmetu
-    //  Kolekcija<Predmet, float> jasminUspjeh = jasmin(new Datum(18, 06, 2021), new  Datum(21, 06, 2021));
-    //  cout << jasminUspjeh << crt;
+
+    //vraca kolekciju predmeta koji sadrze najmanje jednu ocjenu evidentiranu u periodu izmedju proslijedjenih datuma
+    //float se odnosi na prosjecan broj dana izmedju ostvarenih ocjena na predmetu
+  //  Kolekcija<Predmet, float> jasminUspjeh = jasmin(new Datum(18, 06, 2021), new  Datum(21, 06, 2021));
+   // cout << jasminUspjeh << crt;
 
     cin.get();
     system("pause>0");
