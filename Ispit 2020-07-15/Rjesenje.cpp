@@ -50,7 +50,7 @@ public:
     Kolekcija() { _trenutno = 0; }
     Kolekcija(const Kolekcija& obj) {
         _trenutno = obj._trenutno;
-        for (size_t i = 0; i < _trenutno; i++)
+        for (int i = 0; i < _trenutno; i++)
         {
             _elementi1[i] = new T1(*obj._elementi1[i]);
             _elementi2[i] = new T2(*obj._elementi2[i]);
@@ -58,12 +58,12 @@ public:
     }
     Kolekcija& operator=(const Kolekcija& obj) {
         if (this != &obj) {
-            for (size_t i = 0; i < _trenutno; i++) {
+            for (int i = 0; i < _trenutno; i++) {
                 delete _elementi1[i];
                 delete _elementi2[i];
             }
             _trenutno = obj._trenutno;
-            for (size_t i = 0; i < _trenutno; i++)
+            for (int i = 0; i < _trenutno; i++)
             {
                 _elementi1[i] = new T1(*obj._elementi1[i]);
                 _elementi2[i] = new T2(*obj._elementi2[i]);
@@ -79,7 +79,7 @@ public:
         _trenutno++;
     }
     void RemoveAt(int lokacija) {
-        for (size_t i = lokacija; i < _trenutno - 1; i++)
+        for (int i = lokacija; i < _trenutno - 1; i++)
         {
             *_elementi1[i] = *_elementi1[i + 1];
             *_elementi2[i] = *_elementi2[i + 1];
@@ -92,14 +92,14 @@ public:
         _trenutno++;
     }
     T2& operator[](T1 vrijednost) {
-        for (size_t i = 0; i < _trenutno; i++)
+        for (int i = 0; i < _trenutno; i++)
         {
             if (*_elementi1[i] == vrijednost)
                 return *_elementi2[i];
         }
     }
     ~Kolekcija() {
-        for (size_t i = 0; i < _trenutno; i++) {
+        for (int i = 0; i < _trenutno; i++) {
             delete _elementi1[i]; _elementi1[i] = nullptr;
             delete _elementi2[i]; _elementi2[i] = nullptr;
         }
@@ -108,7 +108,7 @@ public:
     T2& getElement2(int lokacija)const { return *_elementi2[lokacija]; }
     int getTrenutno() { return _trenutno; }
     friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
-        for (size_t i = 0; i < obj._trenutno; i++)
+        for (int i = 0; i < obj._trenutno; i++)
             COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
         return COUT;
     }
@@ -182,7 +182,7 @@ public:
         float prosjek = 0;
         if (_ocjene->getTrenutno() == 0)
             return prosjek;
-        for (size_t i = 0; i < _ocjene->getTrenutno(); i++)
+        for (int i = 0; i < _ocjene->getTrenutno(); i++)
         {
             prosjek += _ocjene->getElement1(i);
         }
@@ -199,7 +199,7 @@ public:
     Kolekcija<int, Datum, brojTehnika>& GetOcjene() { return *_ocjene; }
     friend ostream& operator<<(ostream& COUT, Tehnika& obj) {
         COUT << "Naziv: " << obj._naziv << endl;
-        for (size_t i = 0; i < obj._ocjene->getTrenutno(); i++)
+        for (int i = 0; i < obj._ocjene->getTrenutno(); i++)
         {
             COUT << "Ocjena: " << obj._ocjene->getElement1(i) << ", datum: " << obj._ocjene->getElement2(i) << endl;
         }
@@ -216,7 +216,7 @@ public:
     }
     Polaganje(const Polaganje& obj) {
         _pojas = obj._pojas;
-        for (size_t i = 0; i < _polozeneTehnike.size(); i++)
+        for (int i = 0; i < _polozeneTehnike.size(); i++)
         {
             _polozeneTehnike.push_back(new Tehnika(*obj._polozeneTehnike[i]));
         }
@@ -229,7 +229,7 @@ public:
         return *this;
     }
     ~Polaganje() {
-        for (size_t i = 0; i < _polozeneTehnike.size(); i++) {
+        for (int i = 0; i < _polozeneTehnike.size(); i++) {
             delete _polozeneTehnike[i];
             _polozeneTehnike[i] = nullptr;
         }
@@ -238,7 +238,7 @@ public:
         float prosjek = 0;
         if (_polozeneTehnike.size() == 0)
             return prosjek;
-        for (size_t i = 0; i < _polozeneTehnike.size(); i++)
+        for (int i = 0; i < _polozeneTehnike.size(); i++)
         {
             prosjek += _polozeneTehnike[i]->ProsjecnaZaTehniku();
         }
@@ -249,7 +249,7 @@ public:
     friend ostream& operator<< (ostream& COUT, const Polaganje& obj) {
         COUT << "Pojas: " << IspisPojasa[obj._pojas] << endl;
         COUT << "Polozene tehnike: " << endl;
-        for (size_t i = 0; i < obj._polozeneTehnike.size(); i++)
+        for (int i = 0; i < obj._polozeneTehnike.size(); i++)
             COUT << *obj._polozeneTehnike[i];
         return COUT;
     }
@@ -321,10 +321,10 @@ public:
         return *this;
     }
     bool PostojeLiIsti(Pojas pojas, Tehnika& tehnika) {
-        for (size_t i = 0; i < _polozeniPojasevi.size(); i++)
+        for (int i = 0; i < _polozeniPojasevi.size(); i++)
         {
             if (_polozeniPojasevi[i].GetPojas() == pojas) {
-                for (size_t j = 0; j < _polozeniPojasevi[i].GetTehnike().size(); j++)
+                for (int j = 0; j < _polozeniPojasevi[i].GetTehnike().size(); j++)
                 {
                     if (*_polozeniPojasevi[i].GetTehnike()[j] == tehnika)
                         return true;
@@ -334,7 +334,7 @@ public:
         return false;
     }
     bool AddTehniku(Pojas pojas, Tehnika& tehnika) {
-        for (size_t i = 0; i < _polozeniPojasevi.size(); i++)
+        for (int i = 0; i < _polozeniPojasevi.size(); i++)
         {
             if (pojas > _polozeniPojasevi[i].GetPojas() && (_polozeniPojasevi[i].GetTehnike().size() < 3 || _polozeniPojasevi[i].GetProsjekPojas() < 3.5))
                 return false;
@@ -359,7 +359,7 @@ public:
         float prosjek = 0;
         if (_polozeniPojasevi.size() == 0)
             return prosjek;
-        for (size_t i = 0; i < _polozeniPojasevi.size(); i++)
+        for (int i = 0; i < _polozeniPojasevi.size(); i++)
         {
             prosjek += _polozeniPojasevi[i].GetProsjekPojas();
         }
@@ -370,7 +370,7 @@ public:
     }
     friend ostream& operator<< (ostream& COUT, KaratePolaznik& obj) {
         COUT << "Ime: " << obj.GetImePrezime() << ", email: " << obj.GetEmail() << ", lozinka: " << obj.GetLozinka() << endl;
-        for (size_t i = 0; i < obj._polozeniPojasevi.size(); i++)
+        for (int i = 0; i < obj._polozeniPojasevi.size(); i++)
             COUT << obj._polozeniPojasevi[i];
         return COUT;
     }
@@ -494,28 +494,28 @@ void main() {
     /* ispisuje: naziv tehnike, ocjene (zajedno sa datumom) i prosjecnu ocjenu za tu tehniku
        ukoliko tehnika nema niti jednu ocjenu prosjecna treba biti 0*/
     cout << choku_zuki << endl;
-   
-     if (ValidirajLozinku("john4Do*e"))
-         cout << "OK" << crt;
-     if (!ValidirajLozinku("john4Doe"))
-         cout << "Specijalni znak?" << crt;
-     if (!ValidirajLozinku("jo*4Da"))
-         cout << "7 znakova?" << crt;
-     if (!ValidirajLozinku("4jo-hnoe"))
-         cout << "Veliko slovo?" << crt;
-     if (ValidirajLozinku("@john2Doe"))
-         cout << "OK" << crt;
 
-      /*
-      za autentifikaciju svaki korisnik mora posjedovati lozinku koja sadrzi:
-      -   najmanje 7 znakova
-      -   velika i mala slova
-      -   najmanje jedan broj
-      -   najmanje jedan specijalni znak
-      za provjeru validnosti lozinke koristiti globalnu funkciju ValidirajLozinku, a unutar nje regex metode.
-      validacija lozinke se vrsi unutar konstruktora klase Korisnik, a u slucaju da nije validna
-      postaviti je na podrazumijevanu vrijednost: <VRIJEDNOST_NIJE_VALIDNA>
-      */
+    if (ValidirajLozinku("john4Do*e"))
+        cout << "OK" << crt;
+    if (!ValidirajLozinku("john4Doe"))
+        cout << "Specijalni znak?" << crt;
+    if (!ValidirajLozinku("jo*4Da"))
+        cout << "7 znakova?" << crt;
+    if (!ValidirajLozinku("4jo-hnoe"))
+        cout << "Veliko slovo?" << crt;
+    if (ValidirajLozinku("@john2Doe"))
+        cout << "OK" << crt;
+
+    /*
+    za autentifikaciju svaki korisnik mora posjedovati lozinku koja sadrzi:
+    -   najmanje 7 znakova
+    -   velika i mala slova
+    -   najmanje jedan broj
+    -   najmanje jedan specijalni znak
+    za provjeru validnosti lozinke koristiti globalnu funkciju ValidirajLozinku, a unutar nje regex metode.
+    validacija lozinke se vrsi unutar konstruktora klase Korisnik, a u slucaju da nije validna
+    postaviti je na podrazumijevanu vrijednost: <VRIJEDNOST_NIJE_VALIDNA>
+    */
 
     Korisnik* jasmin = new KaratePolaznik("Jasmin Azemovic", "jasmin@karate.ba", "j@sm1N*");
     Korisnik* adel = new KaratePolaznik("Adel Handzic", "adel@edu.karate.ba", "4Ade1*H");
