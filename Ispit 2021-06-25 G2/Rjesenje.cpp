@@ -51,7 +51,7 @@ public:
     Kolekcija(const Kolekcija& obj) {
         _trenutno = new int(*obj._trenutno);
         _dupliranje = obj._dupliranje;
-        for (size_t i = 0; i < *_trenutno; i++)
+        for (int i = 0; i < *_trenutno; i++)
         {
             _elementi1[i] = obj._elementi1[i];
             _elementi2[i] = obj._elementi2[i];
@@ -62,7 +62,7 @@ public:
             delete _trenutno;
             _trenutno = new int(*obj._trenutno);
             _dupliranje = obj._dupliranje;
-            for (size_t i = 0; i < *_trenutno; i++)
+            for (int i = 0; i < *_trenutno; i++)
             {
                 _elementi1[i] = obj._elementi1[i];
                 _elementi2[i] = obj._elementi2[i];
@@ -71,7 +71,7 @@ public:
         return *this;
     }
     bool JesuLiIsti(T1 el1, T2 el2) {
-        for (size_t i = 0; i < *_trenutno; i++)
+        for (int i = 0; i < *_trenutno; i++)
         {
             if (_dupliranje == BEZ_DUPLIKATA && _elementi1[i] == el1 && _elementi2[i] == el2)
                 return true;
@@ -91,7 +91,7 @@ public:
         if (kraj > *_trenutno)
             throw exception("Opseg nije validan!");
         Kolekcija<int, int> nova;
-        for (size_t i = pocetak; i <= kraj; i++)
+        for (int i = pocetak; i <= kraj; i++)
         {
             nova.AddElement(_elementi1[i], _elementi2[i]);
         }
@@ -106,7 +106,7 @@ public:
     T2 getElement2(int lokacija)const { return _elementi2[lokacija]; }
     int getTrenutno()const { return *_trenutno; }
     friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
-        for (size_t i = 0; i < *obj._trenutno; i++)
+        for (int i = 0; i < *obj._trenutno; i++)
             COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
         return COUT;
     }
@@ -184,7 +184,7 @@ public:
         float prosjek = 0;
         if (_ocjene->getTrenutno() == 0)
             return prosjek;
-        for (size_t i = 0; i < _ocjene->getTrenutno(); i++)
+        for (int i = 0; i < _ocjene->getTrenutno(); i++)
         {
             prosjek += _ocjene->getElement2(i);
         }
@@ -201,7 +201,7 @@ public:
     Kolekcija<Datum, int> GetOcjene() const { return *_ocjene; }
     friend ostream& operator<<(ostream& COUT, Tehnika& obj) {
         COUT << "Naziv tehnike: " << obj._naziv << endl;
-        for (size_t i = 0; i < obj._ocjene->getTrenutno(); i++)
+        for (int i = 0; i < obj._ocjene->getTrenutno(); i++)
         {
             COUT << "Ocjena: " << obj._ocjene->getElement2(i) << ", datum: " << obj._ocjene->getElement1(i) << endl;
         }
@@ -232,7 +232,7 @@ public:
         float prosjek = 0;
         if (_polozeneTehnike.getTrenutno() == 0)
             return prosjek;
-        for (size_t i = 0; i < _polozeneTehnike.getTrenutno(); i++)
+        for (int i = 0; i < _polozeneTehnike.getTrenutno(); i++)
         {
             prosjek += _polozeneTehnike.getElement1(i)->ProsjecnaOcjenaTehnike();
         }
@@ -243,7 +243,7 @@ public:
     friend ostream& operator<< (ostream& COUT, const Polaganje& obj) {
         //ispis izmjenjen jer nije bio validan, ispisivalo samo adresu tehnike i napomenu
         COUT << ispisPojasa[obj._pojas] << " ";
-        for (size_t i = 0; i < obj._polozeneTehnike.getTrenutno(); i++) {
+        for (int i = 0; i < obj._polozeneTehnike.getTrenutno(); i++) {
             COUT << *obj._polozeneTehnike.getElement1(i) << " " << obj._polozeneTehnike.getElement2(i) << endl;
             cout << crt << endl;
         }
@@ -274,7 +274,7 @@ class KaratePolaznik {
 public:
     KaratePolaznik(const char* imePrezime, string emailAdresa, string brojTelefona) {
         _imePrezime = GetNizKaraktera(imePrezime);
-        _emailAdresa = ValidirajEmail(emailAdresa) ? emailAdresa:"not set"; //validiramo e-mail adresu preko globalne funkcije
+        _emailAdresa = ValidirajEmail(emailAdresa) ? emailAdresa : "not set"; //validiramo e-mail adresu preko globalne funkcije
         _brojTelefona = brojTelefona;
     }
     KaratePolaznik(const KaratePolaznik& obj) {
@@ -292,10 +292,10 @@ public:
         return *this;
     }
     bool PostojeLiIsti(Pojas pojas, Tehnika& tehnika) {
-        for (size_t i = 0; i < _polozeniPojasevi.size(); i++)
+        for (int i = 0; i < _polozeniPojasevi.size(); i++)
         {
             if (_polozeniPojasevi[i].GetPojas() == pojas) {
-                for (size_t j = 0; j < _polozeniPojasevi[i].GetTehnike().getTrenutno(); j++)
+                for (int j = 0; j < _polozeniPojasevi[i].GetTehnike().getTrenutno(); j++)
                 {
                     if (_polozeniPojasevi[i].GetTehnike().getElement1(j) == &tehnika)
                         return true;
@@ -305,7 +305,7 @@ public:
         return false;
     }
     bool AddTehniku(Pojas pojas, Tehnika& tehnika, string napomena = "napomena") {
-        for (size_t i = 0; i < _polozeniPojasevi.size(); i++)
+        for (int i = 0; i < _polozeniPojasevi.size(); i++)
         {
             if ((pojas > _polozeniPojasevi[i].GetPojas() && _polozeniPojasevi[i].GetTehnike().getTrenutno() < 1 && _polozeniPojasevi[i].GetProsjekPojas() < 3.5))
                 return false;
@@ -333,7 +333,7 @@ public:
         for (int i = 0; i < _polozeniPojasevi.size(); i++)
             prosjek += _polozeniPojasevi[i].GetProsjekPojas();
         return prosjek / _polozeniPojasevi.size();
-   }
+    }
     float GetProsjecanBrojDana()
     {
         float prosjek = 0;
@@ -379,7 +379,7 @@ public:
     }
     friend ostream& operator<< (ostream& COUT, KaratePolaznik& obj) {
         COUT << obj._imePrezime << " " << obj._emailAdresa << " " << obj._brojTelefona << endl;
-        for (size_t i = 0; i < obj._polozeniPojasevi.size(); i++)
+        for (int i = 0; i < obj._polozeniPojasevi.size(); i++)
             COUT << obj._polozeniPojasevi[i];
         return COUT;
     }
@@ -461,7 +461,6 @@ void main() {
     - u prezimenu posjedovati najmanje 3 karaktera
     - znak @
     - domenu karate.ba ili edu.karate.ba. Pored drzavne(.ba), dozvoljene su oznake .com i .org.
-
    za provjeru validnosti email adrese koristiti globalnu funkciju ValidirajEmail, a unutar nje regex metode.
    validacija email adrese ce se vrsiti unutar konstruktora klase KaratePolaznik, a u slucaju da nije validna
    postaviti je na defaultnu adresu: notSet@edu.karate.ba
@@ -510,27 +509,27 @@ void main() {
     if (!jasmin->AddTehniku(ZUTI, choku_zuki, "Napomena 5"))
         cout << "Tehnika NIJE uspjesno dodana!" << crt;
 
-      /*nakon evidentiranja tehnike na bilo kojem pojasu kandidatu se salje email sa porukom:
-      FROM:info@karate.ba
-      TO: emailKorisnika
-      Postovani ime i prezime, evidentirana vam je thenika X za Y pojas. Dosadasnji uspjeh (prosjek ocjena)
-      na pojasu Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim pojasevima iznosi Z.
-      Pozdrav.
-      KARATE Team.
-      ukoliko je prosjek na nivou tog pojasa veci od 4.5 kandidatu se salje SMS sa porukom: "Svaka cast za uspjeh 4.D na X pojasu".
-      slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
-      */
-      cout << *jasmin << crt;
-    
-      //vraca kolekciju tehnika koji sadrze najmanje jednu ocjenu evidentiranu u periodu izmedju proslijedjenih datuma
-      //float se odnosi na prosjecan broj dana izmedju ostvarenih ocjena na tehnici
-      Kolekcija<Tehnika*, float> jasminUspjeh = (*jasmin)(Datum(18, 06, 2021), Datum(21, 06, 2021));
-      for (size_t i = 0; i < jasminUspjeh.getTrenutno(); i++)
-          cout << *jasminUspjeh.getElement1(i) << " " << jasminUspjeh.getElement2(i) << crt;
-    
-      delete jasmin;
-      delete adel;
-      delete emailNotValid;
+    /*nakon evidentiranja tehnike na bilo kojem pojasu kandidatu se salje email sa porukom:
+    FROM:info@karate.ba
+    TO: emailKorisnika
+    Postovani ime i prezime, evidentirana vam je thenika X za Y pojas. Dosadasnji uspjeh (prosjek ocjena)
+    na pojasu Y iznosi F, a ukupni uspjeh (prosjek ocjena) na svim pojasevima iznosi Z.
+    Pozdrav.
+    KARATE Team.
+    ukoliko je prosjek na nivou tog pojasa veci od 4.5 kandidatu se salje SMS sa porukom: "Svaka cast za uspjeh 4.D na X pojasu".
+    slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
+    */
+    cout << *jasmin << crt;
+
+    //vraca kolekciju tehnika koji sadrze najmanje jednu ocjenu evidentiranu u periodu izmedju proslijedjenih datuma
+    //float se odnosi na prosjecan broj dana izmedju ostvarenih ocjena na tehnici
+    Kolekcija<Tehnika*, float> jasminUspjeh = (*jasmin)(Datum(18, 06, 2021), Datum(21, 06, 2021));
+    for (int i = 0; i < jasminUspjeh.getTrenutno(); i++)
+        cout << *jasminUspjeh.getElement1(i) << " " << jasminUspjeh.getElement2(i) << crt;
+
+    delete jasmin;
+    delete adel;
+    delete emailNotValid;
 
     cin.get();
     system("pause>0");
