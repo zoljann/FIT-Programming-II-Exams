@@ -57,7 +57,7 @@ public:
         _dupliranje = obj._dupliranje;
         _elementi1 = new T1[*_trenutno];
         _elementi2 = new T2[*_trenutno];
-        for (size_t i = 0; i < *_trenutno; i++)
+        for (int i = 0; i < *_trenutno; i++)
         {
             _elementi1[i] = obj._elementi1[i];
             _elementi2[i] = obj._elementi2[i];
@@ -70,7 +70,7 @@ public:
             _trenutno = new int(*obj._trenutno);
             _elementi1 = new T1[*_trenutno];
             _elementi2 = new T2[*_trenutno];
-            for (size_t i = 0; i < *_trenutno; i++)
+            for (int i = 0; i < *_trenutno; i++)
             {
                 _elementi1[i] = obj._elementi1[i];
                 _elementi2[i] = obj._elementi2[i];
@@ -79,7 +79,7 @@ public:
         return *this;
     }
     bool ProvjeriJesuLiIsti(T1 el1, T2 el2) {
-        for (size_t i = 0; i < *_trenutno; i++)
+        for (int i = 0; i < *_trenutno; i++)
         {
             if (_dupliranje == BEZ_DUPLIKATA && _elementi1[i] == el1 && _elementi2[i] == el2)
                 return true;
@@ -93,7 +93,7 @@ public:
         T2* temp2 = _elementi2;
         _elementi1 = new T1[*_trenutno + 1];
         _elementi2 = new T2[*_trenutno + 1];
-        for (size_t i = 0; i < *_trenutno; i++)
+        for (int i = 0; i < *_trenutno; i++)
         {
             _elementi1[i] = temp1[i];
             _elementi2[i] = temp2[i];
@@ -105,7 +105,7 @@ public:
     }
     Kolekcija<int, int> operator[](T1 vrijednost) {
         Kolekcija<int, int> nova;
-        for (size_t i = 0; i < *_trenutno; i++)
+        for (int i = 0; i < *_trenutno; i++)
         {
             if (_elementi1[i] == vrijednost)
                 nova.AddElement(_elementi1[i], _elementi2[i]);
@@ -121,7 +121,7 @@ public:
     T2 getElement2(int lokacija)const { return _elementi2[lokacija]; }
     int getTrenutno()const { return *_trenutno; }
     friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
-        for (size_t i = 0; i < *obj._trenutno; i++)
+        for (int i = 0; i < *obj._trenutno; i++)
             COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
         return COUT;
     }
@@ -192,7 +192,7 @@ public:
     }
     float ProsjecnaPitanje() {
         float prosjek = 0;
-        for (size_t i = 0; i < _ocjeneRjesenja.getTrenutno(); i++)
+        for (int i = 0; i < _ocjeneRjesenja.getTrenutno(); i++)
         {
             prosjek += _ocjeneRjesenja.getElement1(i);
         }
@@ -209,7 +209,7 @@ public:
 
     friend ostream& operator<<(ostream& COUT, Pitanje obj) {
         COUT << "Sadrzaj: " << obj._sadrzaj << endl;
-        for (size_t i = 0; i < obj._ocjeneRjesenja.getTrenutno(); i++)
+        for (int i = 0; i < obj._ocjeneRjesenja.getTrenutno(); i++)
         {
             COUT << "Ocjena: " << obj._ocjeneRjesenja.getElement1(i) << ", datum: " << *obj._ocjeneRjesenja.getElement2(i) << endl;
         }
@@ -240,7 +240,7 @@ public:
         float prosjek = 0;
         if (_pitanjaOdgovori.getTrenutno() == 0)
             return prosjek;
-        for (size_t i = 0; i < _pitanjaOdgovori.getTrenutno(); i++)
+        for (int i = 0; i < _pitanjaOdgovori.getTrenutno(); i++)
         {
             prosjek += _pitanjaOdgovori.getElement1(i).ProsjecnaPitanje();
         }
@@ -250,7 +250,7 @@ public:
     Predmet GetPredmet() { return _predmet; }
     friend ostream& operator<< (ostream& COUT, const Ispit& obj) {
         COUT << "Predmet: " << ispisP[obj._predmet] << endl;
-        for (size_t i = 0; i < obj._pitanjaOdgovori.getTrenutno(); i++)
+        for (int i = 0; i < obj._pitanjaOdgovori.getTrenutno(); i++)
             COUT << obj._pitanjaOdgovori.getElement1(i) << ", napomena: " << obj._pitanjaOdgovori.getElement2(i) << endl;
         return COUT;
     }
@@ -311,10 +311,10 @@ public:
         return *this;
     }
     bool ProvjeriIste(Predmet predmet, Pitanje& pitanje) {
-        for (size_t i = 0; i < _polozeniPredmeti.size(); i++)
+        for (int i = 0; i < _polozeniPredmeti.size(); i++)
         {
             if (predmet == _polozeniPredmeti[i]->GetPredmet()) {
-                for (size_t j = 0; j < _polozeniPredmeti[i]->GetPitanjaOdgovore().getTrenutno(); j++)
+                for (int j = 0; j < _polozeniPredmeti[i]->GetPitanjaOdgovore().getTrenutno(); j++)
                 {
                     if (pitanje == _polozeniPredmeti[i]->GetPitanjaOdgovore().getElement1(j))
                         return true;
@@ -324,7 +324,7 @@ public:
         return false;
     }
     bool AddPitanje(Predmet predmet, Pitanje& pitanje, string napomena = "napomena") {
-        for (size_t i = 0; i < _polozeniPredmeti.size(); i++)
+        for (int i = 0; i < _polozeniPredmeti.size(); i++)
         {
             if (ProvjeriIste(predmet, pitanje))
                 return false;
@@ -351,7 +351,7 @@ public:
         float prosjek = 0;
         if (_polozeniPredmeti.size() == 0)
             return prosjek;
-        for (size_t i = 0; i < _polozeniPredmeti.size(); i++)
+        for (int i = 0; i < _polozeniPredmeti.size(); i++)
         {
             prosjek += _polozeniPredmeti[i]->ProsjekSvihPitanja();
         }
@@ -360,9 +360,9 @@ public:
     int operator()(string rijec) {
         regex pravilo(rijec);
         int brojac = 0;
-        for (size_t i = 0; i < _polozeniPredmeti.size(); i++)
+        for (int i = 0; i < _polozeniPredmeti.size(); i++)
         {
-            for (size_t j = 0; j < _polozeniPredmeti[i]->GetPitanjaOdgovore().getTrenutno(); j++)
+            for (int j = 0; j < _polozeniPredmeti[i]->GetPitanjaOdgovore().getTrenutno(); j++)
             {
                 if (regex_search(_polozeniPredmeti[i]->GetPitanjaOdgovore().getElement2(j), pravilo))
                     brojac++;
@@ -371,13 +371,13 @@ public:
         return brojac;
     }
     ~Kandidat() {
-        for (size_t i = 0; i < _polozeniPredmeti.size(); i++)
+        for (int i = 0; i < _polozeniPredmeti.size(); i++)
             delete _polozeniPredmeti[i];
     }
     friend ostream& operator<< (ostream& COUT, Kandidat& obj) {
         COUT << "Ime i prezime: " << obj.GetImePrezime() << ", email: " << obj.GetEmail() << ", lozinka: " << obj.GetLozinka() << endl;
         COUT << "Polozeni predmeti: " << endl;
-        for (size_t i = 0; i < obj._polozeniPredmeti.size(); i++)
+        for (int i = 0; i < obj._polozeniPredmeti.size(); i++)
         {
             COUT << *obj._polozeniPredmeti[i];
         }
