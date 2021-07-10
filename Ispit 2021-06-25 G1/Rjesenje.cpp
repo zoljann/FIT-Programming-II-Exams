@@ -54,7 +54,7 @@ public:
         _omoguciDupliranje = obj._omoguciDupliranje;
         _elementi1 = new T1[_trenutno];
         _elementi2 = new T2[_trenutno];
-        for (size_t i = 0; i < _trenutno; i++)
+        for (int i = 0; i < _trenutno; i++)
         {
             _elementi1[i] = obj._elementi1[i];
             _elementi2[i] = obj._elementi2[i];
@@ -68,7 +68,7 @@ public:
             _omoguciDupliranje = obj._omoguciDupliranje;
             _elementi1 = new T1[_trenutno];
             _elementi2 = new T2[_trenutno];
-            for (size_t i = 0; i < _trenutno; i++)
+            for (int i = 0; i < _trenutno; i++)
             {
                 _elementi1[i] = obj._elementi1[i];
                 _elementi2[i] = obj._elementi2[i];
@@ -77,7 +77,7 @@ public:
         return *this;
     }
     bool PostojeLiIsti(T1 el1, T2 el2) {
-        for (size_t i = 0; i < _trenutno; i++)
+        for (int i = 0; i < _trenutno; i++)
         {
             if (!_omoguciDupliranje && _elementi1[i] == el1 && _elementi2[i] == el2)
                 return true;
@@ -91,7 +91,7 @@ public:
         T2* temp2 = _elementi2;
         _elementi1 = new T1[_trenutno + 1];
         _elementi2 = new T2[_trenutno + 1];
-        for (size_t i = 0; i < _trenutno; i++)
+        for (int i = 0; i < _trenutno; i++)
         {
             _elementi1[i] = temp1[i];
             _elementi2[i] = temp2[i];
@@ -105,7 +105,7 @@ public:
         if (kraj > _trenutno)
             throw exception("Opseg nije validan!");
         Kolekcija<int, int> nova;
-        for (size_t i = pocetak; i <= kraj; i++)
+        for (int i = pocetak; i <= kraj; i++)
         {
             nova.AddElement(_elementi1[i], _elementi2[i]);
         }
@@ -119,7 +119,7 @@ public:
     T2& getElement2(int lokacija)const { return _elementi2[lokacija]; }
     int getTrenutno() { return _trenutno; }
     friend ostream& operator<< (ostream& COUT, const Kolekcija& obj) {
-        for (size_t i = 0; i < obj._trenutno; i++)
+        for (int i = 0; i < obj._trenutno; i++)
             COUT << obj.getElement1(i) << " " << obj.getElement2(i) << endl;
         return COUT;
     }
@@ -182,7 +182,7 @@ public:
     }
     float ProsjecnaOcjena() {
         float prosjek = 0;
-        for (size_t i = 0; i < _ocjene->getTrenutno(); i++)
+        for (int i = 0; i < _ocjene->getTrenutno(); i++)
         {
             prosjek += _ocjene->getElement2(i);
         }
@@ -198,7 +198,7 @@ public:
     Kolekcija<Datum*, int> GetOcjene() { return _ocjene; }
     friend ostream& operator<<(ostream& COUT, Predmet obj) {
         COUT << "Naziv predmeta: " << obj._naziv << endl;
-        for (size_t i = 0; i < obj._ocjene->getTrenutno(); i++)
+        for (int i = 0; i < obj._ocjene->getTrenutno(); i++)
         {
             COUT << "Ocjena: " << obj._ocjene->getElement2(i) << ", datum: " << *obj._ocjene->getElement1(i) << endl;
         }
@@ -227,7 +227,7 @@ public:
     }
     float GetProsjekOcjena() {
         float prosjek = 0;
-        for (size_t i = 0; i < _polozeniPredmeti.getTrenutno(); i++)
+        for (int i = 0; i < _polozeniPredmeti.getTrenutno(); i++)
         {
             prosjek += _polozeniPredmeti.getElement1(i)->ProsjecnaOcjena();
         }
@@ -280,10 +280,10 @@ public:
         return *this;
     }
     bool ProvjeriJesuLiIsti(eRazred razred, Predmet& predmet) {
-        for (size_t i = 0; i < _uspjeh.size(); i++)
+        for (int i = 0; i < _uspjeh.size(); i++)
         {
             if (_uspjeh[i].GetERazred() == razred) {
-                for (size_t j = 0; j < _uspjeh[i].GetPredmeti().getTrenutno(); j++)
+                for (int j = 0; j < _uspjeh[i].GetPredmeti().getTrenutno(); j++)
                 {
                     if (_uspjeh[i].GetPredmeti().getElement1(j) == &predmet)
                         return true;
@@ -294,10 +294,10 @@ public:
     }
     float GetDosadasnjiUspjeh(eRazred razred) {
         float prosjek = 0;
-        for (size_t i = 0; i < _uspjeh.size(); i++)
+        for (int i = 0; i < _uspjeh.size(); i++)
         {
             if (_uspjeh[i].GetERazred() == razred) {
-                for (size_t j = 0; j < _uspjeh[i].GetPredmeti().getTrenutno(); j++)
+                for (int j = 0; j < _uspjeh[i].GetPredmeti().getTrenutno(); j++)
                 {
                     prosjek += _uspjeh[i].GetPredmeti().getElement1(j)->ProsjecnaOcjena();
                 }
@@ -306,7 +306,7 @@ public:
         }
     }
     bool AddPredmet(eRazred razred, Predmet& predmet, const char* napomena = "napomena") {
-        for (size_t i = 0; i < _uspjeh.size(); i++)
+        for (int i = 0; i < _uspjeh.size(); i++)
         {
             if (razred == _uspjeh[i].GetERazred()) {
 
@@ -347,7 +347,7 @@ public:
     }
     friend ostream& operator<< (ostream& COUT, Kandidat& obj) {
         COUT << obj._imePrezime << " " << obj._emailAdresa << " " << obj._brojTelefona << endl;
-        for (size_t i = 0; i < obj._uspjeh.size(); i++)
+        for (int i = 0; i < obj._uspjeh.size(); i++)
             COUT << obj._uspjeh[i];
         return COUT;
     }
