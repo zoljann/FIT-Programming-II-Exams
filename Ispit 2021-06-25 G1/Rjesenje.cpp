@@ -35,7 +35,7 @@ char* GetNizKaraktera(const char* sadrzaj) {
     return temp;
 }
 bool ValidirajBrojTelefona(string telefon) {
-    return regex_match(telefon, regex("[+][0-9]{2,3}\s?[0]?[0-9]{2}\s?[0-9]{2,3}?\s?\-?[0-9]{2,3}"));
+    return regex_match(telefon, regex("[+][0-9]{2,3}\\s?[0]?[0-9]{2}\\s?[0-9]{2,3}?\\s?\\-?[0-9]{2,3}"));
 }
 template<class T1, class T2>
 class Kolekcija {
