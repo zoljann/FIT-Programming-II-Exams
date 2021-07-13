@@ -374,7 +374,7 @@ public:
         }
     }
 
-    Kolekcija<Predmet, float> operator()(Datum prvi, Datum drugi)
+    Kolekcija<Predmet, float> operator()(Datum* prvi, Datum* drugi)
     {
         Kolekcija<Predmet, float> nova;
         float prosjecanBrojDana = GetProsjecanBrojDana();
@@ -384,7 +384,7 @@ public:
             {
                 for (int k = 0; k < _uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getTrenutno(); k++)
                 {
-                    if (*_uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k) > prvi && drugi > *_uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k))
+                    if (_uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k) > prvi && drugi > _uspjeh[i].GetPredmeti().getElement1(j)->GetOcjene().getElement1(k))
                     {
                         nova.AddElement(*_uspjeh[i].GetPredmeti().getElement1(j), GetProsjecanBrojDana());
                     }
@@ -535,8 +535,8 @@ void main() {
 
     //vraca kolekciju predmeta koji sadrze najmanje jednu ocjenu evidentiranu u periodu izmedju proslijedjenih datuma
     //float se odnosi na prosjecan broj dana izmedju ostvarenih ocjena na predmetu
-  //  Kolekcija<Predmet, float> jasminUspjeh = jasmin(new Datum(18, 06, 2021), new  Datum(21, 06, 2021));
-   // cout << jasminUspjeh << crt;
+   Kolekcija<Predmet, float> jasminUspjeh = jasmin(new Datum(18, 06, 2021), new  Datum(21, 06, 2021));
+   cout << jasminUspjeh << crt;
 
     cin.get();
     system("pause>0");
