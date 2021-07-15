@@ -1,4 +1,4 @@
-Ôªø#include<regex>
+#include<regex>
 #include<string>
 #include<vector>
 #include<regex>
@@ -156,7 +156,7 @@ public:
 };
 class Tehnika {
     char* _naziv;
-    //int se odnosi na ocjenu u opsegu od 1 ‚Äì 5, a datum na momenat postizanja ocjene
+    //int se odnosi na ocjenu u opsegu od 1 ñ 5, a datum na momenat postizanja ocjene
     Kolekcija<Datum, int>* _ocjene;
 public:
     Tehnika(const char* naziv = "", Datum datum = Datum(), int ocjena = 0) {
@@ -305,6 +305,8 @@ public:
         return false;
     }
     bool AddTehniku(Pojas pojas, Tehnika& tehnika, string napomena = "napomena") {
+        if (_polozeniPojasevi.size() == 0 && pojas > 1)
+            return false;
         for (int i = 0; i < _polozeniPojasevi.size(); i++)
         {
             if ((pojas > _polozeniPojasevi[i].GetPojas() && _polozeniPojasevi[i].GetTehnike().getTrenutno() < 1 && _polozeniPojasevi[i].GetProsjekPojas() < 3.5))
@@ -393,7 +395,7 @@ const char* GetOdgovorNaPrvoPitanje() {
     return "Odgovor -> OVDJE UNESITE VAS ODGOVOR";
 }
 const char* GetOdgovorNaDrugoPitanje() {
-    cout << "Pitanje -> Pojasniti ulogu i naƒçin koristenja iteratora?\n";
+    cout << "Pitanje -> Pojasniti ulogu i naËin koristenja iteratora?\n";
     return "Odgovor -> OVDJE UNESITE VAS ODGOVOR";
 }
 void main() {
@@ -454,7 +456,7 @@ void main() {
     cout << choku_zuki << endl;
 
     /*
-    email adresa treba biti u sljedecem formatu 3_ime.prezime@karate.ba tj. zadovoljavati sljedeƒáa pravila:
+    email adresa treba biti u sljedecem formatu 3_ime.prezime@karate.ba tj. zadovoljavati sljedeÊa pravila:
     - poceti sa jednim brojem nakon cega slijedi donja crtica
     - u imenu posjedovati najmanje 3 karaktera
     - izmedju imena i prezimena moze biti tacka ili donja crtica ili nista od navedenog
