@@ -6,6 +6,8 @@
 #include<exception>
 #include<thread>
 #include<iostream>
+#include<iterator>
+#include<fstream>
 using namespace std;
 /****************************************************************************
 1. SVE KLASE TREBAJU POSJEDOVATI ADEKVATAN DESTRUKTOR
@@ -175,7 +177,7 @@ protected:
 	char* _imePrezime;
 	string _brojTelefona;
 	bool ValidirajTelefon(string telefon) {
-		return regex_match(telefon, regex("[+][0-9]{2,3}\\s?[0]?[0-9]{2}\\s?[0-9]{2,3}?\\s?\\-?[0-9]{2,3}"));
+		return regex_match(telefon, regex("\\+[0-9]{2,3}\\s?[0]?[0-9]{2}\\s?[0-9]{2,3}?\\s?\\-?[0-9]{2,3}"));
 	}
 public:
 	Polaznik(string imePrezime, string brojTelefona) : _imePrezime(AlocirajNizKaraktera(imePrezime.c_str())) {
@@ -201,7 +203,7 @@ public:
 class Ucenik : public Polaznik {
 	Kolekcija<Predmet, Aktivnost, 16>* _aktivnosti;
 public:
-	Ucenik(const char* imePrezime, string brojTelefona) :Polaznik(imePrezime,brojTelefona){
+	Ucenik(const char* imePrezime, string brojTelefona) :Polaznik(imePrezime, brojTelefona) {
 		_aktivnosti = new Kolekcija<Predmet, Aktivnost, 16>;
 	}
 	Ucenik(const Ucenik& obj) :Polaznik(obj) {
@@ -238,7 +240,6 @@ public:
 	friend ostream& operator<<(ostream& COUT, Ucenik& n)
 	{
 		COUT << "Ucenik: " << n._imePrezime << ", kontakt: " << n._brojTelefona << endl;
-		cout << "Aktivnosti: " << endl;
 		for (size_t i = 0; i < n._aktivnosti->GetTrenutno(); i++)
 		{
 			COUT << "Predmet: " << ispisPredmeta[n._aktivnosti->GetElement1(i)] << endl;
@@ -307,6 +308,51 @@ public:
 		}
 		return false;
 	}
+	pair<Polaznik*, float> GetNajboljegUcenika()
+	{
+		pair<Polaznik*, float> novi;
+		float najProsjek = INT_MIN;
+		int indeksUcenika = 0;
+		for (int i = 0; i < _ucenici.size(); i++)
+		{
+			if (_ucenici[i].GetProsjek() > najProsjek)
+			{
+				najProsjek = _ucenici[i].GetProsjek();
+				indeksUcenika = i;
+			}
+		}
+
+		Polaznik* polaznik = dynamic_cast<Polaznik*>(&_ucenici[indeksUcenika]);
+		if (polaznik != nullptr)
+		{
+			novi.first = polaznik;
+			novi.second = najProsjek;
+		}
+		return novi;
+	}
+
+	bool SpasiUFajl(const char* nazivfajla, bool trebalBrisat = false)
+	{
+		ofstream upis;
+		if (trebalBrisat)
+		{
+			upis.open(nazivfajla, ios::out);
+			if (upis.fail())
+				return false;
+			upis << *this << endl;
+			upis.close();
+			return true;
+		}
+		else {
+			upis.open(nazivfajla, ios::app);
+			if (upis.fail())
+				return false;
+			upis << *this << endl;
+			upis.close();
+			return true;
+		}
+	}
+
 	~Skola() {
 		delete[] _naziv; _naziv = nullptr;
 	}
@@ -361,7 +407,7 @@ int main() {
 	onemoguciti pojavljivanje samo jedne zagrade, a ukoliko format nije adekvatna koristiti vrijednost not_set
 	*/
 	gimnazijaMostar("Telefon NotValidFormat", "387 61)333-444");
-	
+
 	try
 	{
 		/*onemoguciti dodavanje ucenika sa istim imenom i prezimenom ili brojem telefona*/
@@ -371,7 +417,7 @@ int main() {
 	{
 		cout << ex.what() << endl;
 	}
-	
+
 	if (gimnazijaMostar.DodajAktivnost("Jasmin Azemovic", MATEMATIKA, Aktivnost(I, 4, "Priprema za takmicenje iz Matematije koje se odrzava u Konjicu 07.02.2019")))
 		cout << "Aktivnost uspjesno dodana" << endl;
 	/*na nivou svakog razreda se mogu evidentirati maksimalno 4 aktivnosti, a takodjer, na nivou razreda se ne smiju ponavljati aktivnosti iz istog predmeta*/
@@ -387,21 +433,23 @@ int main() {
 		cout << "Aktivnost uspjesno dodana" << endl;
 	if (gimnazijaMostar.DodajAktivnost("Adel Handzic", MATEMATIKA, Aktivnost(I, 5, "Izrada skripte na temu integralni racun")))
 		cout << "Aktivnost uspjesno dodana" << endl;
-	//
-	////ispisuje sve ucenike i njihove aktivnosti
-	//cout << gimnazijaMostar << endl;
-	//
-	//
-	//pair<Polaznik*, float> par = gimnazijaMostar.GetNajboljegUcenika();
-	//cout << "Najbolji ucenik je " << par.first->GetImePrezime() << " sa prosjekom " << par.second << endl;
-	//
-	///*U fajl (npr. Gimnazija.txt) upisati podatke (podatke upisati kao obicni tekst) o skoli i svim ucenicima.
-	//Nakon upisa, potrebno je ispisati sadrzaj fajla. Parametar tipa bool oznacava da li ce ranije dodani sadrzaj fajla prethodno biti pobrisan*/
-	//
-	//if (gimnazijaMostar.SpasiUFajl("Gimnazija.txt"))
-	//	cout << "Podaci o ucenicima uspjesno pohranjeni u fajl" << endl;
-	//if (gimnazijaMostar.SpasiUFajl("Gimnazija.txt", true))
-	//	cout << "Podaci o ucenicima uspjesno pohranjeni u fajl" << endl;
+	
+	//ispisuje sve ucenike i njihove aktivnosti
+	cout << gimnazijaMostar << endl;
+	
+
+
+	
+	pair<Polaznik*, float> par = gimnazijaMostar.GetNajboljegUcenika();
+	cout << "Najbolji ucenik je " << par.first->GetImePrezime() << " sa prosjekom " << par.second << endl;
+	
+	/*U fajl (npr. Gimnazija.txt) upisati podatke (podatke upisati kao obicni tekst) o skoli i svim ucenicima.
+	Nakon upisa, potrebno je ispisati sadrzaj fajla. Parametar tipa bool oznacava da li ce ranije dodani sadrzaj fajla prethodno biti pobrisan*/
+	
+	if (gimnazijaMostar.SpasiUFajl("Gimnazija.txt"))
+		cout << "Podaci o ucenicima uspjesno pohranjeni u fajl" << endl;
+	if (gimnazijaMostar.SpasiUFajl("Gimnazija.txt", true))
+		cout << "Podaci o ucenicima uspjesno pohranjeni u fajl" << endl;
 
 	cin.get();
 	system("pause>0");
