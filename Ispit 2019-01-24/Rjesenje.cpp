@@ -1,4 +1,4 @@
-﻿#include<regex>
+#include<regex>
 #include<string>
 #include<vector>
 #include<regex>
@@ -11,7 +11,6 @@ using namespace std;
 
 const char* crt = "\n-------------------------------------------\n";
 enum GodinaStudija { PRVA = 1, DRUGA, TRECA };
-const char* ispisGodine = { "PRVA" "DRUGA" "TRECA" };
 char* Alociraj(const char* sadrzaj) {
     if (sadrzaj == nullptr)return nullptr;
     int vel = strlen(sadrzaj) + 1;
@@ -19,7 +18,6 @@ char* Alociraj(const char* sadrzaj) {
     strcpy_s(temp, vel, sadrzaj);
     return temp;
 }
-
 template<class T1, class T2>
 class Dictionary {
     T1* _elementi1;
@@ -77,7 +75,7 @@ public:
             throw exception("Opseg nije validan!");
         if (pocetak < kraj)
             throw exception("Posljednja ne moze biti manja od pocetne!");
-         Dictionary<T1, T2> nova;
+        Dictionary<T1, T2> nova;
         for (int i = pocetak; i <= kraj; i++)
         {
             nova.AddElement(_elementi1[i], _elementi2[i]);
@@ -133,7 +131,18 @@ public:
             << *_godina << " " << *_sati << ":" << *_minuti;
         return Alociraj(niz.str().c_str());
     }
-
+    int toMinute() {
+        return *_godina * 365 * 24 * 60 * 60 + *_mjesec * 30 * 24 * 60 * 60 + *_dan * 60 * 60 + *_sati * 60 + *_minuti;
+    }
+    friend bool operator <(DatumVrijeme& d1, DatumVrijeme& d2)
+    {
+        if (*d1._godina != *d2._godina) return *d1._godina < *d2._godina;
+        else if (*d1._mjesec != *d2._mjesec) return *d1._mjesec < *d2._mjesec;
+        else if (*d1._dan != *d2._dan) return *d1._dan < *d2._dan;
+        else if (*d1._sati != *d2._sati) return *d1._sati < *d2._sati;
+        else if (*d1._minuti != *d2._minuti) return *d1._minuti < *d2._minuti;
+        return false;
+    }
     ~DatumVrijeme() {
         delete _dan; _dan = nullptr;
         delete _mjesec; _mjesec = nullptr;
@@ -146,11 +155,14 @@ public:
         return COUT;
     }
 };
+bool MinimalnoSat(DatumVrijeme& d1, DatumVrijeme& d2) {
+    return d1.toMinute() - d2.toMinute() > 60;
+}
 class Predmet {
     char* _naziv;
     int _ocjena;
     string _napomena;
-    public:
+public:
     Predmet(const char* naziv = "", int ocjena = 0, string napomena = "") {
         _naziv = Alociraj(naziv);
         _ocjena = ocjena;
@@ -170,7 +182,7 @@ class Predmet {
         }
         return *this;
     }
-    bool operator==(Predmet& obj) {
+    bool operator==(const Predmet& obj) {
         return strcmp(_naziv, obj._naziv) == 0;
     }
     ~Predmet() {
@@ -183,7 +195,7 @@ class Predmet {
     string GetNapomena() { return _napomena; }
     char* GetNaziv() { return _naziv; }
     int GetOcjena() { return _ocjena; }
-   
+
     void DodajNapomenu(string napomena) {
         _napomena += " " + napomena;
     }
@@ -192,7 +204,7 @@ class Uspjeh {
     GodinaStudija* _godina;
     //datumvrijeme se odnosi na vrijeme evidentiranja polozenog predmeta
     Dictionary<Predmet, DatumVrijeme> _predmeti;
-    public:
+public:
     Uspjeh(GodinaStudija godina) {
         _godina = new GodinaStudija(godina);
     }
@@ -208,7 +220,7 @@ class Uspjeh {
         return *this;
     }
     ~Uspjeh() { delete _godina; _godina = nullptr; }
-  
+
     Dictionary<Predmet, DatumVrijeme>* GetPredmeti() { return &_predmeti; }
     GodinaStudija* GetGodinaStudija() { return _godina; }
     friend ostream& operator<< (ostream& COUT, const Uspjeh& obj) {
@@ -228,31 +240,36 @@ class Student {
     bool ValidirajTelefon(string telefon) {
         return regex_match(telefon, regex("\\d{3}\\s\\d{3}\\s\\d{3}"));
     }
-    void SaljemMejl(GodinaStudija& godina, float prosjek) {
+    void SaljemSMS(const GodinaStudija& godina, float prosjek) {
+        muteks.lock();
+        cout << "Svaka cast za uspjeh " << prosjek << " u " << godina << endl;
+        muteks.unlock();
+    }
+    void SaljemMejl(const GodinaStudija& godina, float prosjek) {
         muteks.lock();
         cout << "FROM: info@fit.ba\nTO: " << GetEmail() << endl;
-        cout << "Postovani " << GetImePrezime() << ", evidentirali ste uspjeh za " << ispisGodine[godina] << " godinu studija." << endl;
+        cout << "Postovani " << GetImePrezime() << ", evidentirali ste uspjeh za " << godina << " godinu studija." << endl;
         cout << "Pozdrav.\nFIT Team.\n" << endl;
         muteks.unlock();
+        if (prosjek > 8)
+        {
+            thread sms(&Student::SaljemSMS, this, godina, prosjek);
+            sms.join();
+        }
     }
-    void SaljemSMS(GodinaStudija& godina, float prosjek) {
-        muteks.lock();
-        cout << "Svaka cast za uspjeh " << prosjek << " u " << ispisGodine[godina] << endl;
-        muteks.unlock();
-    }
-   // void EvidencijaUspjeha(Uspjeh uspjeh)
-   // {
-   //     muteks.lock();
-   //     double suma = 0;
-   //     for (int i = 0; i < uspjeh.GetPredmeti()->getTrenutno(); i++)
-   //         suma += uspjeh.GetPredmeti()->getElement1(i).GetOcjena();
-   //     suma /= uspjeh.GetPredmeti()->getTrenutno();
-   //     muteks.unlock();
-   //
-   //     thread email(&Student::SaljemMejl, this, *uspjeh.GetGodinaStudija(), suma);
-   //     email.join();
-   // }
-    public:
+     void EvidencijaUspjeha(Uspjeh uspjeh)
+     {
+         muteks.lock();
+         float suma = 0;
+         for (int i = 0; i < uspjeh.GetPredmeti()->getTrenutno(); i++)
+             suma += uspjeh.GetPredmeti()->getElement1(i).GetOcjena();
+         suma /= uspjeh.GetPredmeti()->getTrenutno();
+         muteks.unlock();
+    
+         thread email(&Student::SaljemMejl, this, *uspjeh.GetGodinaStudija(), suma);
+         email.join();
+     }
+public:
     Student(const char* imePrezime, string emailAdresa, string brojTelefona) {
         _imePrezime = Alociraj(imePrezime);
         _emailAdresa = ValidirajEmail(emailAdresa) ? _emailAdresa = emailAdresa : "notSet@fit.ba";
@@ -274,29 +291,81 @@ class Student {
         }
         return *this;
     }
-    bool AddPredmet(Predmet& predmet, const GodinaStudija& godina, DatumVrijeme& datum)
+    bool AddPredmet(Predmet& predmet, const GodinaStudija godina, DatumVrijeme datum)
     {
-        for (auto i = _uspjeh.begin(); i != _uspjeh.end(); i++) {
-            if (*i->GetGodinaStudija() == godina) {
+        for (auto i = _uspjeh.begin(); i != _uspjeh.end(); i++)
+            if (*i->GetGodinaStudija() == godina)
+            {
                 for (int j = 0; j < i->GetPredmeti()->getTrenutno(); j++)
+
                     if (i->GetPredmeti()->getElement1(j) == predmet)
                         return false;
-                // if (!ProsaoMinSat(d, i->GetPredmeti()->getElement2(i->GetPredmeti()->getTrenutno() - 1)))
-                //     return false;
+
+                if (!MinimalnoSat(datum, i->GetPredmeti()->getElement2(i->GetPredmeti()->getTrenutno() - 1)))
+                    return false;
 
                 i->GetPredmeti()->AddElement(predmet, datum);
-                // thread t(&Student::, this, *i);
-                // t.join();
+                thread t(&Student::EvidencijaUspjeha, this, *i);
+                t.join();
                 return true;
             }
 
-            Uspjeh u(godina);
-            u.GetPredmeti()->AddElement(predmet, datum);
-            _uspjeh.push_back(u);
-            //thread t(&Student::, this, _uspjeh.at(_uspjeh.size() - 1));
-            //t.join();
-            return true;
+        _uspjeh.emplace_back(godina);
+        _uspjeh.at(_uspjeh.size() - 1).GetPredmeti()->AddElement(predmet, datum);
+        thread t(&Student::EvidencijaUspjeha, this, _uspjeh.at(_uspjeh.size() - 1));
+        t.join();
+        return true;
+    }
+    int BrojPonavljanjaRijeci(string rijec)
+    {
+        regex pravilo(rijec);
+        int suma = 0;
+        for (auto i = _uspjeh.begin(); i != _uspjeh.end(); i++)
+        {
+            for (int j = 0; j < i->GetPredmeti()->getTrenutno(); j++)
+            {
+                string temp = i->GetPredmeti()->getElement1(j).GetNapomena();
+                auto pocetak = sregex_iterator
+                (
+                    temp.begin(),
+                    temp.end(),
+                    pravilo
+                );
+                auto kraj = sregex_iterator();
+
+                suma += distance(pocetak, kraj);
+            }
         }
+
+        return suma;
+    }
+    vector<Predmet> operator()(DatumVrijeme* d1, DatumVrijeme* d2)
+    {
+        vector<Predmet> temp;
+        for (auto i = _uspjeh.begin(); i != _uspjeh.end(); i++)
+            for (int j = 0; j < i->GetPredmeti()->getTrenutno(); j++)
+                if (*d1 < i->GetPredmeti()->getElement2(j) && i->GetPredmeti()->getElement2(j) < *d2)
+                    temp.emplace_back(i->GetPredmeti()->getElement1(j));
+        return temp;
+    }
+
+    Uspjeh* operator[](const char* godina)
+    {
+        GodinaStudija g;
+        if (strcmp(godina, "PRVA") == 0) g = PRVA;
+        else if (strcmp(godina, "DRUGA") == 0) g = DRUGA;
+        else if (strcmp(godina, "TRECA") == 0) g = TRECA;
+        else return nullptr;
+
+        Uspjeh* u = nullptr;
+        for (auto i = _uspjeh.begin(); i != _uspjeh.end(); i++)
+            if (*i->GetGodinaStudija() == g)
+            {
+                u = new Uspjeh(g);
+                *u = *i;
+            }
+        return u;
+
     }
     ~Student() {
         delete[] _imePrezime; _imePrezime = nullptr;
@@ -332,12 +401,12 @@ void main() {
     cout << datum19062019_1015.ToCharArray() << endl;//treba ispisati: 19/06/2019 10:15
     temp = datum05072019_1231;
     cout << temp.ToCharArray() << endl;//treba ispisati: 05/07/2019 12:31
- 
+
     const int DictionaryTestSize = 9;
     Dictionary<int, int> Dictionary1;
     for (size_t i = 0; i < DictionaryTestSize; i++)
         Dictionary1.AddElement(i + 1, i * i);
- 
+
     try {
         //vraca elemente kolekcije koji se nalaze na lokacijama definisanim vrijednostima parametara (npr. 2 - 7). 
         //funkcija baca izuzetak u slucaju da se zahtijeva lokacija koja ne postoji ili je vrijednost posljednje lokacije manja od pocetne
@@ -349,14 +418,14 @@ void main() {
         cout << err.what() << endl;
     }
     cout << Dictionary1 << endl;
- 
+
     Dictionary<int, int> Dictionary2 = Dictionary1;
     cout << Dictionary2 << crt;
- 
+
     Dictionary<int, int> Dictionary3;
     Dictionary3 = Dictionary1;
     cout << Dictionary3 << crt;
- 
+
     //napomena se moze dodati i prilikom kreiranja objekta
     Predmet MAT("Matematika", 7, "Ucesce na takmicenju"),
         UIT("Uvod u informacijske tehnologije", 9),
@@ -364,7 +433,7 @@ void main() {
         EN("Engleski jezik", 6);
     UIT.DodajNapomenu("Pohvala za ostvareni uspjeh");
     cout << MAT << endl;
- 
+
     /*
     email adresa mora biti u formatu: text-text@ nakon cega slijedi neka od sljedecih domena: hotmail.com ili
     //outlook.com ili fit.ba. Pod text se podrazumijeva bilo koje slovo, malo ili veliko.
@@ -374,7 +443,7 @@ void main() {
     Student jasmin("Jasmin Azemovic", "jasmin.azemovic@hotmail.com", "033 281 172");
     Student adel("Adel Handzic", "adel.handzic@fit.ba", "033 281 170");
     Student emailNotValid("Ime Prezime", "korisnik@lazna.ba", "033 281 170");
- 
+
     /*
     uspjeh se dodaje za svaki predmet na nivou godine studija.
     tom prilikom onemoguciti:
@@ -397,28 +466,28 @@ void main() {
     //ne treba dodati UIT jer nije prosao 1 sat od dodavanja posljednjeg predmeta
     if (jasmin.AddPredmet(UIT, PRVA, datum20062019_1115))
         cout << "Predmet uspjesno dodan!" << crt;
- //   /*nakon evidentiranja uspjeha na bilo kojem predmetu tj. prilikom uspjesno izvrsene funkcije AddPredmet, Studentu se salje email sa sadrzajem:
- //   FROM:info@fit.ba
- //   TO: emailStudenta
- //   Postovani ime i prezime, evidentirali ste uspjeh za X godinu studija.
- //   Pozdrav.
- //   FIT Team.
- //   ukoliko je, nakon dodavanja predmeta, prosjek na nivou te godine veci od 8.0 Studentu se, pored email-a, salje i SMS sa sadrzajem: "Svaka cast za uspjeh X.X       ostvaren u X godini studija".
- //   slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
- //   */
- //   cout << "USPJEH ISPISATI KORISTEÆI OSTREAM_ITERATOR" << endl;
- //   cout << jasmin << endl;
- //   //vraca broj ponavljanja odredjene rijeci u napomenama, koristiti sregex_iterator
- //   cout << "Rijec takmicenje se pojavljuje " << jasmin.BrojPonavljanjaRijeci("takmicenju") << " puta." << endl;
- //
- //   //vraca niz predmeta koji su evidentiranih u periodu izmedju vrijednosti proslijedjenih parametara
- //   vector<Predmet> jasminUspjeh = jasmin(new DatumVrijeme(18, 06, 2019, 10, 15), new DatumVrijeme(21, 06, 2019, 10, 10));
- //   for (Predmet u : jasminUspjeh)
- //       cout << u << endl;
- //
- //   Uspjeh* uspjeh_I_godina = jasmin["PRVA"];//vraca uspjeh Studenta ostvaren u prvoj godini studija
- //   if (uspjeh_I_godina != nullptr)
- //       cout << *uspjeh_I_godina << endl;
+       /*nakon evidentiranja uspjeha na bilo kojem predmetu tj. prilikom uspjesno izvrsene funkcije AddPredmet, Studentu se salje email sa sadrzajem:
+       FROM:info@fit.ba
+       TO: emailStudenta
+       Postovani ime i prezime, evidentirali ste uspjeh za X godinu studija.
+       Pozdrav.
+       FIT Team.
+       ukoliko je, nakon dodavanja predmeta, prosjek na nivou te godine veci od 8.0 Studentu se, pored email-a, salje i SMS sa sadrzajem: "Svaka cast za uspjeh X.X       ostvaren u X godini studija".
+       slanje poruka i emailova implemenitrati koristeci zasebne thread-ove.
+       */
+       cout << "USPJEH ISPISATI KORISTEÆI OSTREAM_ITERATOR" << endl;
+       cout << jasmin << endl;
+       //vraca broj ponavljanja odredjene rijeci u napomenama, koristiti sregex_iterator
+       cout << "Rijec takmicenje se pojavljuje " << jasmin.BrojPonavljanjaRijeci("takmicenju") << " puta." << endl;
+    
+       //vraca niz predmeta koji su evidentiranih u periodu izmedju vrijednosti proslijedjenih parametara
+       vector<Predmet> jasminUspjeh = jasmin(new DatumVrijeme(18, 06, 2019, 10, 15), new DatumVrijeme(21, 06, 2019, 10, 10));
+       for (Predmet u : jasminUspjeh)
+           cout << u << endl;
+    
+       Uspjeh* uspjeh_I_godina = jasmin["PRVA"];//vraca uspjeh Studenta ostvaren u prvoj godini studija
+       if (uspjeh_I_godina != nullptr)
+           cout << *uspjeh_I_godina << endl;
 
     cin.get();
     system("pause>0");
